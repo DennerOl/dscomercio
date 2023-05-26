@@ -2,6 +2,7 @@ package com.devsuperior.dscomercio.entities;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -103,4 +104,14 @@ public class Order {
 	public Set<OrderItem> getItems() {
 		return items;
 	}
+	
+	/* qui pego os items do orderItem e transformo em
+	 * um lista de produtos.
+	 * ou seja dos pedidos posso querer que mostre uma lista
+	 * dos produtos que contém aquele pedido
+	 */
+	public List<Product> getProducts() {
+	return items.stream().map(x -> x.getProduct()).toList();
+
+		}
 }

@@ -1,6 +1,7 @@
 package com.devsuperior.dscomercio.entities;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -37,9 +38,11 @@ public class Product {
 	 * terceira tabela criada por joinColumns
 	 */
 	@ManyToMany
-	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	@JoinTable(name = "tb_product_category",
+	joinColumns = @JoinColumn(name = "product_id"),
+	inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private Set<Category> categories = new HashSet<>();
-
+	
 	// categoria para um orderItem 
 	
 	@OneToMany(mappedBy = "id.product")
@@ -105,4 +108,13 @@ public class Product {
 	public Set<OrderItem> getItems() {
 		return items;
 	}
+	
+	/* qui pego os items do orderItem e transformo em
+	 * um lista de produtos.
+	 * ou seja dos produtos posso querer que mostre uma lista
+	 * dos pedidos que contém aquele produto
+	 */	
+		public List<Order> getOrders() {
+			return items.stream().map(x -> x.getOrder()).toList();
+		}
 }
