@@ -3,6 +3,7 @@ package com.devsuperior.dscomercio.entities;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -111,6 +112,22 @@ public class User {
 		return orders;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return id == other.id;
+	}
 	
 }
