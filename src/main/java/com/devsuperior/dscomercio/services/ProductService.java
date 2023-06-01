@@ -47,4 +47,21 @@ public class ProductService {
 		Page<Product> result = repository.findAll(pageable);
 		return result.map(x -> new ProductDTO(x));
 	}
+	
+/* metodo para inserir um novo produto somente (admin)
+ * 	(caso de uso -> inserir produto)
+ */
+	@Transactional
+	public ProductDTO insert (ProductDTO dto) {
+// tenho que converter o obj recebido como dto para entidade
+		Product entity = new Product();
+		entity.setName(dto.getName());
+		entity.setDescription(dto.getDescription());
+		entity.setPrice(dto.getPrice());
+		entity.setImgUrl(dto.getImgUrl());
+		
+		entity = repository.save(entity);
+		return new ProductDTO(entity);
+		
+	}
 }
