@@ -38,7 +38,7 @@ public class ProductService {
 /*metodo para retornar todos produtos
  * 	paginados através do Page que é uma
  * Stream (caso de uso -> consultar catalago)
- * todos usuarios podem usar
+ * todos usuarios podem usar (operação de consulta)
  */
 		
 	@Transactional(readOnly = true)
@@ -49,19 +49,40 @@ public class ProductService {
 	}
 	
 /* metodo para inserir um novo produto somente (admin)
- * 	(caso de uso -> inserir produto)
+ * 	(caso de uso -> inserir produto) (operação de inserir)
  */
 	@Transactional
 	public ProductDTO insert (ProductDTO dto) {
 // tenho que converter o obj recebido como dto para entidade
 		Product entity = new Product();
+		copyDtoToEntity(dto, entity);	
+		entity = repository.save(entity);
+		return new ProductDTO(entity);
+		
+	}
+	
+/* metodo para atualizar um produto ja existente 
+ * 	ele ataualiza através do id informado
+ */
+	@Transactional
+	public ProductDTO update (Long id, ProductDTO dto) {
+// tenho que chamar o produto com id referente 
+		Product entity = repository.getReferenceById(id);		
+		copyDtoToEntity(dto, entity);		
+		entity = repository.save(entity);
+		return new ProductDTO(entity);
+		
+	}
+
+/* metodo auxiliar para copia de uma entidade
+ * do dto	
+ */
+	private void copyDtoToEntity(ProductDTO dto, Product entity) {
 		entity.setName(dto.getName());
 		entity.setDescription(dto.getDescription());
 		entity.setPrice(dto.getPrice());
 		entity.setImgUrl(dto.getImgUrl());
 		
-		entity = repository.save(entity);
-		return new ProductDTO(entity);
-		
-	}
+	
+}
 }

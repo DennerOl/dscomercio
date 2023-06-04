@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,17 +27,19 @@ public class ProductController {
 
 /*
  * metodo recebe um id do postman cria um objeto dto chamando o metodo da classe
- * Service com id recebido
+ * Service com id recebido 
+ * a anotação casa o id informado com o long id
  */
 
 	@GetMapping(value = "/{id}")
-	public ProductDTO findById(@PathVariable Long id) {
+	public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
 		ProductDTO dto = service.findById(id);
-		return dto;
+		return ResponseEntity.ok(dto);
 	}
 
 /*
  * metodo para retornar a lista de produtos paginada através do service
+ * (caso de uso -> consultar catalago)
  */
 	@GetMapping
 	public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
@@ -44,12 +48,25 @@ public class ProductController {
 	}
 
 /* metodo insert novo produto 
- * 	aqui vem da requisição do navegador
+ * 	aqui vem da requisição do navegador 
+ * (caso de uso -> inserir produto)
+ * URI- pega o link do recurso criado 
  */
+	@PostMapping
 	public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto){
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
+	}
+
+/* metodo para atualizar um produto ja existente 
+ * 	ele ataualiza através do id informado
+ * @RequestBody - casa com id informado na requisição	
+ */
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
+		 dto = service.update(id, dto);
+		return ResponseEntity.ok(dto);
 	}
 }
