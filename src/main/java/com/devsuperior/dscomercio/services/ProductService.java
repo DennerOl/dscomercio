@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.dscomercio.dto.ProductDTO;
 import com.devsuperior.dscomercio.entities.Product;
 import com.devsuperior.dscomercio.repositories.ProductRepository;
+import com.devsuperior.dscomercio.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class ProductService {
@@ -20,19 +21,19 @@ public class ProductService {
 	
 /* metodo recebe um ID e retorna um produtoDTO
  * vai la no banco busca o produto e converte para 
- * DTO e retorna
+ * DTO e retorna 
+ * orElseThrow- trata uma possivel exceção de id inexistente
+ * com uma exceção minha
+ * 
+ * -versão melhorada usando boas praticas-
  */
 	
 	@Transactional(readOnly = true)
 	public ProductDTO findById(Long id) {
-		// busquei no banco com id de argumento e retorno para result
-		Optional<Product> result = repository.findById(id);
-		// pego o objeto dentro do optional
-		Product product = result.get();
-		// converto o product para productDTO
-		ProductDTO dto = new ProductDTO(product);
-		return dto;
-	
+		Product product = repository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Recurso não encontrado"));
+		return new ProductDTO(product);
+		
 	}
 	
 /*metodo para retornar todos produtos
