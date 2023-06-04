@@ -63,6 +63,7 @@ public class ProductService {
 	
 /* metodo para atualizar um produto ja existente 
  * 	ele ataualiza através do id informado
+ * (caso de uso -> inserir produto) (operação de atualizar)
  */
 	@Transactional
 	public ProductDTO update (Long id, ProductDTO dto) {
@@ -72,6 +73,14 @@ public class ProductService {
 		entity = repository.save(entity);
 		return new ProductDTO(entity);
 		
+	}
+/* metodo para deletar um produto com
+ * 	id de referencia sem retorno 
+ * (caso de uso -> inserir produto) (operação de deletar)
+ */
+	@Transactional
+	public void delete (Long id) {
+		 repository.deleteById(id);
 	}
 
 /* metodo auxiliar para copia de uma entidade
