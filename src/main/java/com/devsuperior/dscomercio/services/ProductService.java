@@ -1,17 +1,20 @@
 package com.devsuperior.dscomercio.services;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dscomercio.dto.ProductDTO;
 import com.devsuperior.dscomercio.entities.Product;
 import com.devsuperior.dscomercio.repositories.ProductRepository;
+import com.devsuperior.dscomercio.services.exceptions.DatabaseException;
 import com.devsuperior.dscomercio.services.exceptions.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ProductService {
@@ -69,19 +72,33 @@ public class ProductService {
 	@Transactional
 	public ProductDTO update (Long id, ProductDTO dto) {
 // tenho que chamar o produto com id referente 
+	try {	
 		Product entity = repository.getReferenceById(id);		
 		copyDtoToEntity(dto, entity);		
 		entity = repository.save(entity);
 		return new ProductDTO(entity);
-		
+		}
+		catch(EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Recurso não encontrado");
+		}
 	}
 /* metodo para deletar um produto com
  * 	id de referencia sem retorno 
  * (caso de uso -> inserir produto) (operação de deletar)
+ * trato duas exceçoes uma de id não encontrado e outra
+ * de integridade com banco
  */
-	@Transactional
-	public void delete (Long id) {
-		 repository.deleteById(id);
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public void delete(Long id) {
+		if (!repository.existsById(id)) {
+			throw new ResourceNotFoundException("Recurso não encontrado");
+		}
+		try {
+	        	repository.deleteById(id);    		
+		}
+	    	catch (DataIntegrityViolationException e) {
+	        	throw new DatabaseException("Falha de integridade referencial");
+	   	}
 	}
 
 /* metodo auxiliar para copia de uma entidade
