@@ -87,6 +87,9 @@ public class ProductService {
  * (caso de uso -> inserir produto) (operação de deletar)
  * trato duas exceçoes uma de id não encontrado e outra
  * de integridade com banco
+ * o SUPPORTS porque o Spring não consegue 
+ * capturar a exceção DataIntegrityViolationException 
+ * se apenas colocarmos o @Transactional 
  */
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public void delete(Long id) {

@@ -19,6 +19,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.devsuperior.dscomercio.dto.ProductDTO;
 import com.devsuperior.dscomercio.services.ProductService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/products")
 public class ProductController {
@@ -52,9 +54,11 @@ public class ProductController {
  * 	aqui vem da requisição do navegador 
  * (caso de uso -> inserir produto)
  * URI- pega o link do recurso criado 
+ * @Valid - sempre que receber um ProductDto passo 
+ * pelas validações dos campos
  */
 	@PostMapping
-	public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto){
+	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto){
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(dto.getId()).toUri();
@@ -66,7 +70,7 @@ public class ProductController {
  * @RequestBody - casa com id informado na requisição	
  */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
+	public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
 		 dto = service.update(id, dto);
 		return ResponseEntity.ok(dto);
 	}
