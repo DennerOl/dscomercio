@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dscomercio.dto.ProductDTO;
+import com.devsuperior.dscomercio.dto.ProductMinDTO;
 import com.devsuperior.dscomercio.entities.Product;
 import com.devsuperior.dscomercio.repositories.ProductRepository;
 import com.devsuperior.dscomercio.services.exceptions.DatabaseException;
@@ -46,10 +47,10 @@ public class ProductService {
  */
 		
 	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAll(String name, Pageable pageable) {
+	public Page<ProductMinDTO> findAll(String name, Pageable pageable) {
 		// busquei no banco 
 		Page<Product> result = repository.searchByName(name, pageable);
-		return result.map(x -> new ProductDTO(x));
+		return result.map(x -> new ProductMinDTO(x));
 	}
 	
 /* metodo para inserir um novo produto somente (admin)
