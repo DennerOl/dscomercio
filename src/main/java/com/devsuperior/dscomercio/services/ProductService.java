@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devsuperior.dscomercio.dto.CategoryDTO;
 import com.devsuperior.dscomercio.dto.ProductDTO;
 import com.devsuperior.dscomercio.dto.ProductMinDTO;
+import com.devsuperior.dscomercio.entities.Category;
 import com.devsuperior.dscomercio.entities.Product;
 import com.devsuperior.dscomercio.repositories.ProductRepository;
 import com.devsuperior.dscomercio.services.exceptions.DatabaseException;
@@ -113,7 +115,16 @@ public class ProductService {
 		entity.setDescription(dto.getDescription());
 		entity.setPrice(dto.getPrice());
 		entity.setImgUrl(dto.getImgUrl());
-		
+// limpo a categoria antes de associar as novas
+		entity.getCategories().clear();
+	/* para cada CatDTo dentro do dto.get
+	 * 	vou instanciar uma categoria entidade
+	 */
+		for (CategoryDTO catDto : dto.getCategories()) {
+			Category cat = new Category();
+			cat.setId(catDto.getId());
+			entity.getCategories().add(cat);
+		}
 	
 }
 }
