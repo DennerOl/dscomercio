@@ -10,6 +10,8 @@ import com.devsuperior.dscomercio.entities.Order;
 import com.devsuperior.dscomercio.entities.OrderItem;
 import com.devsuperior.dscomercio.entities.OrderStatus;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class OrderDTO {
 
 	private Long id;
@@ -19,6 +21,7 @@ public class OrderDTO {
 	private ClientDTO client;
 	private PaymentDTO payment;
 	
+	@NotEmpty(message = "Deve conter pelo menos um item")
 	private List<OrderItemDTO> items = new ArrayList<>();
 
 	
