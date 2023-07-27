@@ -54,7 +54,7 @@ public class User implements UserDetails {
 	}
 
 
-	public User(long id, String name, String email, String phone, LocalDate birthDate, String password) {
+	public User(Long id, String name, String email, String phone, LocalDate birthDate, String password) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
@@ -69,7 +69,7 @@ public class User implements UserDetails {
 	}
 
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -151,25 +151,6 @@ public class User implements UserDetails {
 		}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return id == other.id;
-	}
-
-
-	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles;
 	}
@@ -203,5 +184,21 @@ public class User implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-	
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return id == other.id;
+	}
 }

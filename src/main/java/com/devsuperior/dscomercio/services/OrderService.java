@@ -33,7 +33,8 @@ public class OrderService {
 	@Autowired
 	private UserService userService;
 	
-	
+	@Autowired
+	private AuthService authService;
 	
 /* metodo recebe um ID e retorna um produtoDTO
  * vai la no banco busca o produto e converte para 
@@ -48,6 +49,11 @@ public class OrderService {
 	public OrderDTO findById(Long id) {
 		Order order = repository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Recurso não encontrado"));
+/* aqui verifico se o pedido é do usuario, pois somente
+ * 	o admin pode ter acesso aos pedidos que não é dele	
+ * chamo o pedido pego o cliente e depois pego o id
+ */		authService.validateSelfOrAdmin(order.getClient().getId());
+		
 		return new OrderDTO(order);
 		
 	}

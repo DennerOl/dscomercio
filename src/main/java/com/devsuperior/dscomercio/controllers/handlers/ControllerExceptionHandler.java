@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.devsuperior.dscomercio.dto.CustomError;
 import com.devsuperior.dscomercio.dto.ValidationError;
 import com.devsuperior.dscomercio.services.exceptions.DatabaseException;
+import com.devsuperior.dscomercio.services.exceptions.ForbiddenException;
 import com.devsuperior.dscomercio.services.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,6 +60,14 @@ import jakarta.servlet.http.HttpServletRequest;
 	}
 	return ResponseEntity.status(status).body(err);
 	
+	
+	}
+	
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<CustomError> Forbidden(ForbiddenException e, HttpServletRequest request) {
+	HttpStatus status = HttpStatus.FORBIDDEN;
+	CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+	return ResponseEntity.status(status).body(err);
 	
 	}
 }

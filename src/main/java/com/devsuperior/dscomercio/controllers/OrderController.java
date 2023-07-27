@@ -31,7 +31,7 @@ public class OrderController {
  * Service com id recebido 
  * a anotação casa o id informado com o long id
  */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<OrderDTO> findById(@PathVariable Long id) {
 		OrderDTO dto = service.findById(id);
