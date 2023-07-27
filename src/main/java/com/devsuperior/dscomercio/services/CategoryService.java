@@ -1,0 +1,30 @@
+package com.devsuperior.dscomercio.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.devsuperior.dscomercio.dto.CategoryDTO;
+import com.devsuperior.dscomercio.entities.Category;
+import com.devsuperior.dscomercio.repositories.CategoryRepository;
+
+@Service
+public class CategoryService {
+
+	@Autowired
+	private CategoryRepository repository;
+	
+/*metodo para retornar todas categorias
+ * 	
+ */	
+	@Transactional(readOnly = true)
+	public List<CategoryDTO> findAll() {
+		// busquei no banco 
+		List<Category> result = repository.findAll();
+		return result.stream().map(x -> new CategoryDTO(x)).toList();
+	}
+	
+
+}
