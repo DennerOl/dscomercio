@@ -23,6 +23,8 @@ public class ValidationError extends CustomError {
  * 
  */
 	public void addError(String fieldName, String message) {
+// remove um erro que ja esteja na mesma lista ou seja nao deixa duplicar
+		errors.removeIf(x-> x.getFieldName().equals(fieldName));	
 		errors.add(new FieldMessage(fieldName, message));
 	}
 }

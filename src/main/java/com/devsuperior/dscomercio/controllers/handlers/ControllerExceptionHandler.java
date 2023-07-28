@@ -19,6 +19,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 	public class ControllerExceptionHandler {
+
+	// classe responsavel por tratar exceções de validação
 	
 /* metodo que vai tratar a exceção ResourceNotFoundException
  * de recurso não encontrado
