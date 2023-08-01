@@ -1,12 +1,74 @@
 # dscomercio
 
-Aqui neste projeto o sistema mantém um cadastro de usuário, produtos e categorias.
-O sistema ira apresentar um catálado de produtos para o usuário selecionar um produto para efetuar seu pedido,
-o usuário pode incluir e remover itens do carrinho de compras. Os dados de um pedido 
-possui os seguintes status: aguardando pagamento, pago, enviado,
-entregue e cancelado.
-Por padrão o usuário cadastrado será sempre cliente e podem atualizar seu cadastro no sistema, registrar pedidos e visualizar
-seus próprios pedidos.
+O sistema deve manter um cadastro de usuário, produtos e suas categorias. 
+
+Cada usuário possui nome, email, telefone, data de nascimento e uma senha de acesso.
+
+Os dados dos produtos são: nome, descrição, preço e imagem. 
+
+O sistema deve apresentar um catálogo de produtos, os quais podem ser filtrados pelo nome do produto. 
+
+A partir desse catálogo, o usuário pode selecionar um produto para ver seus detalhes e para
+decidir se o adiciona a um carrinho de compras. 
+
+O usuário pode incluir e remover itens do carrinho de compra, bem como alterar as quantidades de cada item. 
+
+Uma vez que o usuário decida encerrar o pedido, o pedido deve então ser salvo no sistema com o status
+de "aguardando pagamento". 
+
+Os dados de um pedido são: instante em que ele foi salvo, status, e uma lista de itens, onde cada item se refere a um produto e sua quantidade no pedido. 
+
+O status de um pedido pode ser: aguardando pagamento, pago, enviado,
+entregue e cancelado. 
+
+Quando o usuário paga por um pedido, o instante do pagamento deve ser registrado. 
+
+Os usuários do sistema podem ser clientes ou administradores, sendo que todo usuário cadastrado por padrão é cliente. 
+
+Usuários não identificados podem se cadastrar no sistema, navegar no catálogo de produtos e no carrinho de
+compras. 
+
+Clientes podem atualizar seu cadastro no sistema, registrar pedidos e visualizar
+seus próprios pedidos. 
+
+Usuários administradores tem acesso à área administrativa onde
+pode acessar os cadastros de usuários, produtos e categorias.
+
 
 
 ![dscomercio](https://github.com/DennerOl/dscomercio/assets/124217386/0de8f029-c1d8-4385-9bec-091956c57fe4)
+
+--------------------------BAIXE O DOCUMENTO DE REQUISITOS--------------------------
+
+[02 Documento de requisitos DSCommerce.pdf](https://github.com/DennerOl/dscomercio/files/12223408/02.Documento.de.requisitos.DSCommerce.pdf)
+
+-----------------------IMPORTE A COLLECTION DO POSTMAN DENTRO DA PASTA DO PROJETO--------------------------
+
+
+-----Tecnologias que coloquei em prática-------
+
+Criação do projeto em SpringBoot 3
+
+API Rest
+
+Estruturação de projeto, camadas
+
+Relacionamento de classes
+
+Seeding da Base de Dados
+
+CRUD de produtos
+
+Busca paginada
+
+Tratamento de exceção com resposta personalizada
+
+Validação com Bean Validation
+
+Consulta JPQL
+
+Login e controle de acesso SpringSecurity JWT
+
+Mapeamento objeto relacional
+
+
