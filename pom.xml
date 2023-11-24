@@ -82,31 +82,41 @@
 		    <version>3.1.0</version> <!--$NO-MVN-MAN-VER$ -->
 		</plugin>
 		
-		<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/jacoco-report</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+	<plugin>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>0.8.7</version>
+		<configuration>
+			<excludes>
+						<exclude>com/devsuperior/dscomercio/DscomercioApplication.class</exclude>
+						<exclude>com/devsuperior/dscomercio/config/**</exclude>
+						<exclude>com/devsuperior/dscomercio/entities/**</exclude>
+						<exclude>com/devsuperior/dscomercio/dto/**</exclude>
+						<exclude>com/devsuperior/dscomercio/controllers/handlers/**</exclude>
+						<exclude>com/devsuperior/dscomercio/services/exceptions/**</exclude>
+					</excludes>
+			</configuration>		
+			<executions>
+				<execution>
+					<goals>
+						<goal>prepare-agent</goal>
+					</goals>
+				</execution>
+				<execution>
+					<id>jacoco-report</id>
+					<phase>prepare-package</phase>
+					<goals>
+						<goal>report</goal>
+					</goals>
+					<configuration>
+						<outputDirectory>target/jacoco-report</outputDirectory>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+	
 		
-		
-		<plugin>
+	<plugin>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-maven-plugin</artifactId>
 		</plugin>
