@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.devsuperior.dscomercio.dto.ProductDTO;
 import com.devsuperior.dscomercio.entities.Product;
 import com.devsuperior.dscomercio.repositories.ProductRepository;
+import com.devsuperior.dscomercio.services.exceptions.ResourceNotFoundException;
 import com.devsuperior.dscomercio.tests.ProductFactory;
 
 @ExtendWith(SpringExtension.class)
@@ -42,8 +43,7 @@ public class ProductServiceTests {
 // simulando os comportamentos 
 
 		Mockito.when(repository.findById(existingProductId)).thenReturn(Optional.of(product));
-
-	
+		Mockito.when(repository.findById(nonExistingProductId)).thenReturn(Optional.empty());
 	
 	
 	}
@@ -60,4 +60,12 @@ public class ProductServiceTests {
 	}
 	
 
+	@Test
+	public void findByIdShouldReturnResourceNotFoundExceptionWhenIdDoesNotExist() {
+		
+		Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+			service.findById(nonExistingProductId);
+			});
+		}
 }
+
