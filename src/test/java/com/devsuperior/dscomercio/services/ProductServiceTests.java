@@ -38,6 +38,7 @@ public class ProductServiceTests {
 	private Product product;
 	private String productName;
 	private PageImpl<Product> page;
+	private ProductDTO productDTO;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -49,6 +50,8 @@ public class ProductServiceTests {
 		productName = "PS5";
 		product = ProductFactory.createProduct2(productName);
 		page = new PageImpl<>(List.of(product));
+	
+		productDTO = new ProductDTO(product);
 
 // simulando os comportamentos 
 
@@ -58,6 +61,7 @@ public class ProductServiceTests {
 // simulando o comportamento da consulta retorna um produto pelo nome paginada
 		Mockito.when(repository.searchByName(any(), (Pageable) any())).thenReturn(page);
 
+		Mockito.when(repository.save(any())).thenReturn(product);
 	}
 
 	@Test
@@ -90,4 +94,14 @@ public class ProductServiceTests {
 		Assertions.assertEquals(result.iterator().next().getName(), productName);
 	}
 
+	
+	@Test
+	public void insertShouldReturnProductDTO() {
+		
+		ProductDTO result = service.insert(productDTO);
+		
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(result.getId(), product.getId());
+		
+	}
 }
