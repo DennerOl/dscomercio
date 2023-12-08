@@ -16,13 +16,19 @@ public class AuthService {
  * caso contrario lanço um 403 pra ele
  */
 	
-	public void validateSelfOrAdmin(long userId) {
+	public void validateSelfOrAdmin(Long userId) {
+		
+		
 // pego o usuario logado		
 		User me = userService.authenticated();
 		
-// testo se user não é admin e nem o usuario que foi passado no parâmetro
-		if (!me.hasRole("ROLE_ADMIN") && me.getId() != userId) {
-			throw new ForbiddenException("Acesso negado");
+// testo se user  é admin, se for eu retorno o user
+		if (me.hasRole("ROLE_ADMIN")) {
+			return;
+		}
+// testo se o user logado é o mesmo do pedido				
+		if (!me.getId().equals( userId)) {
+			throw new ForbiddenException("acesso negado, você não é admin para ver os pedidos de outros usuarios");
 		}
 		
 	}
