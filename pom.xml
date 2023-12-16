@@ -94,6 +94,8 @@
 						<exclude>com/devsuperior/dscomercio/dto/**</exclude>
 						<exclude>com/devsuperior/dscomercio/controllers/handlers/**</exclude>
 						<exclude>com/devsuperior/dscomercio/services/exceptions/**</exclude>
+						<exclude>com/devsuperior/dscomercio/util/**</exclude>
+						<exclude>com/devsuperior/dscomercio/controllers/**</exclude>
 					</excludes>
 			</configuration>		
 			<executions>

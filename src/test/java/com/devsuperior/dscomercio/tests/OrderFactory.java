@@ -16,7 +16,7 @@ public class OrderFactory {
 	Order order = new Order(1L, Instant.now(), OrderStatus.WAITING_PAYMENT, client, new Payment());
 
 	Product product = ProductFactory.createProduct();
-	OrderItem orderItem = new OrderItem(order, product,2, 10.0);
+	OrderItem orderItem = new OrderItem(order, product, 2, 10.0);
 	order.getItems().add(orderItem);
 	
 	return order;
