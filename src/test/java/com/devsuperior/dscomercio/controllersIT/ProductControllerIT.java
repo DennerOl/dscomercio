@@ -1,6 +1,7 @@
 package com.devsuperior.dscomercio.controllersIT;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,7 +13,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.devsuperior.dscomercio.dto.ProductDTO;
+import com.devsuperior.dscomercio.dto.ProductMinDTO;
+import com.devsuperior.dscomercio.entities.Category;
+import com.devsuperior.dscomercio.entities.Product;
+import com.devsuperior.dscomercio.tests.TokenUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,12 +31,41 @@ public class ProductControllerIT {
 	@Autowired
 	private MockMvc mockMvc;
 	
+	@Autowired
+	private TokenUtil tokenUtil;
+	
+
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	
 	private String productName;
+	private String adminToken, clientToken, invalidToken;
+	private String clientUsername, clientPassword, adminUsername, adminPassword;
+	
+	private Product product;
+	private ProductDTO productDTO;
+	
 	
 	@BeforeEach
 	void setUp() throws Exception {
 		
+		clientUsername = "maria@gmail.com";
+		clientPassword = "123456";
+		
+		adminUsername = "alex@gmail.com";
+		adminPassword = "123456";
+		
 		productName = "Macbook";
+		
+		adminToken = tokenUtil.obtainAccessToken(mockMvc, adminUsername, adminPassword );
+		clientToken = tokenUtil.obtainAccessToken(mockMvc, clientUsername, clientPassword );
+		invalidToken = adminToken + "xpto";
+		
+		Category category = new Category(2L, "Eletro");
+		product = new Product(null, "Play5", "Video game de geração top", 3999.90, "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg");
+		product.getCategories().add(category);
+		productDTO = new ProductDTO(product);
 	}
 	
 	@Test
@@ -61,4 +99,27 @@ public class ProductControllerIT {
 
 
 	}
+	
+	@Test 
+	public void insertShouldReturnProductDTOCreatedWhenAdminLogged() throws Exception {
+		
+		String jsonBody = objectMapper.writeValueAsString(productDTO);
+		
+		ResultActions result = mockMvc.perform(post("/products")
+				.header("Authorization","Bearer " + adminToken)
+				.content(jsonBody)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(MockMvcResultHandlers.print());		
+		result.andExpect(status().isCreated());
+		result.andExpect(jsonPath("$.id").value(26L));
+		result.andExpect(jsonPath("$.name").value("Play5"));
+		result.andExpect(jsonPath("$.description").value("Video game de geração top"));
+		result.andExpect(jsonPath("$.price").value(3999.90));
+		result.andExpect(jsonPath("$.imgUrl").value("https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg"));
+		result.andExpect(jsonPath("$.description").value("Play5"));
+		result.andExpect(jsonPath("$.categories[0].id").value(2L));
+	}
+	
+	
 }
