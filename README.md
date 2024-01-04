@@ -57,6 +57,8 @@ Relacionamento de classes
 
 Seeding da Base de Dados
 
+Mapeamento objeto relacional
+
 CRUD de produtos
 
 Busca paginada
@@ -69,6 +71,11 @@ Consulta JPQL
 
 Login e controle de acesso SpringSecurity JWT
 
-Mapeamento objeto relacional
+Testes de software de integração, unitarios e cobertura de testes com Jacoco
+
+![relatorio jacoco](https://github.com/DennerOl/dscomercio/assets/124217386/a2924a73-ebf2-4667-b032-0c4ea7f3377a)
+
+
+
 
 
