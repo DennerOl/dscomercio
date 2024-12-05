@@ -86,10 +86,38 @@ public class UserService implements UserDetailsService {
 
 		// Adicionando a role ao usuário
 		user.addRole(role); // Usando o método addRole para adicionar a role
-		if (repository.findByEmail(user.getEmail()).isPresent()) {
+		if (repository.findByEmail(user.getEmail()).equals(dto.getEmail())) {
 			throw new EmailDuplicadoException("email ja existe na base de dados");
+
 		}
 		user = repository.save(user);
 		return modelMapper.map(user, UserDTO.class);
+	}
+
+	public UserDTO update(UserDTO dto) {
+
+		User existingUser = repository.findByEmail(dto.getEmail())
+				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+
+		if (dto.getName() != null && !dto.getName().equals(existingUser.getName())) {
+			existingUser.setName(dto.getName());
+		}
+
+		if (dto.getPhone() != null && !dto.getPhone().equals(existingUser.getPhone())) {
+			existingUser.setPhone(dto.getPhone());
+		}
+
+		if (dto.getBirthDate() != null && !dto.getBirthDate().equals(existingUser.getBirthDate())) {
+			existingUser.setBirthDate(dto.getBirthDate());
+		}
+
+		if (dto.getPassword() != null && !dto.getPassword().isEmpty()
+				&& !dto.getPassword().equals(existingUser.getPassword())) {
+			existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+		}
+
+		existingUser = repository.save(existingUser);
+
+		return modelMapper.map(existingUser, UserDTO.class);
 	}
 }

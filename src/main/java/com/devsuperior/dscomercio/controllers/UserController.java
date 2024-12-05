@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +15,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.devsuperior.dscomercio.dto.UserDTO;
 import com.devsuperior.dscomercio.services.UserService;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -43,6 +42,12 @@ public class UserController {
 
 		return ResponseEntity.created(endereco).body(userCriado);
 
+	}
+
+	@PatchMapping(value = "/perfil")
+	public ResponseEntity<UserDTO> update(@RequestBody UserDTO dto) {
+		dto = service.update(dto);
+		return ResponseEntity.ok(dto);
 	}
 
 }
