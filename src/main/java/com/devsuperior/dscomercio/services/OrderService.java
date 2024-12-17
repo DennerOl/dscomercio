@@ -23,69 +23,73 @@ public class OrderService {
 
 	@Autowired
 	private OrderRepository repository;
-	
+
 	@Autowired
 	private OrderItemRepository orderItemRepository;
-	
+
 	@Autowired
 	private ProductRepository productRepository;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private AuthService authService;
-	
-/* metodo recebe um ID e retorna um produtoDTO
- * vai la no banco busca o produto e converte para 
- * DTO e retorna 
- * orElseThrow- trata uma possivel exceção de id inexistente
- * com uma exceção minha
- * 
- * -versão melhorada usando boas praticas-
- */
-	
+
+	/*
+	 * metodo recebe um ID e retorna um produtoDTO
+	 * vai la no banco busca o produto e converte para
+	 * DTO e retorna
+	 * orElseThrow- trata uma possivel exceção de id inexistente
+	 * com uma exceção minha
+	 * 
+	 * -versão melhorada usando boas praticas-
+	 */
+
 	@Transactional(readOnly = true)
 	public OrderDTO findById(Long id) {
 		Order order = repository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Recurso não encontrado"));
-/* aqui verifico se o pedido é do usuario, pois somente
- * 	o admin pode ter acesso aos pedidos que não é dele	
- * chamo o pedido pego o cliente e depois pego o id
- */		authService.validateSelfOrAdmin(order.getClient().getId());
-		
+		/*
+		 * aqui verifico se o pedido é do usuario, pois somente
+		 * o admin pode ter acesso aos pedidos que não é dele
+		 * chamo o pedido pego o cliente e depois pego o id
+		 */ authService.validateSelfOrAdmin(order.getClient().getId());
+
 		return new OrderDTO(order);
-		
+
 	}
-/* metodo para salvar um novo pedido associado
- * com Product e OrderItem
- */
+
+	/*
+	 * metodo para salvar um novo pedido associado
+	 * com Product e OrderItem
+	 */
 	@Transactional
-	public  OrderDTO insert(OrderDTO dto) {
-		
-		Order order =  new Order();
-		
+	public OrderDTO insert(OrderDTO dto) {
+
+		Order order = new Order();
+
 		order.setMoment(Instant.now());
-		order.setStatus(OrderStatus.WAITING_PAYMENT);
-	// chamo o nome do usuario logado	
+		order.setStatus(OrderStatus.CREATED);
+		// chamo o nome do usuario logado
 		User user = userService.authenticated();
 		order.setClient(user);
-/* pego todos os items que veio no meu json
- * 	e instancio no OrderItemDTO	
- */
+		/*
+		 * pego todos os items que veio no meu json
+		 * e instancio no OrderItemDTO
+		 */
 		for (OrderItemDTO itemDto : dto.getItems()) {
-// pego o id do produto e instancio em Product			
+			// pego o id do produto e instancio em Product
 			Product product = productRepository.getReferenceById(itemDto.getProductId());
-// agora instancio o OrderItem			
+			// agora instancio o OrderItem
 			OrderItem item = new OrderItem(order, product, itemDto.getQuantity(), product.getPrice());
-// adiciono os items com seus campos que peguei no pedido		
+			// adiciono os items com seus campos que peguei no pedido
 			order.getItems().add(item);
 		}
-		
+
 		repository.save(order);
 		orderItemRepository.saveAll(order.getItems());
 		return new OrderDTO(order);
 	}
-	
 
 }

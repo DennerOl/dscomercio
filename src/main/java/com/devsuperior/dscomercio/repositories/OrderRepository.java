@@ -6,6 +6,6 @@ import com.devsuperior.dscomercio.entities.Order;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
+  void deleteByclient_id(Long client_id);
 
-	
 }

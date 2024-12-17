@@ -11,6 +11,7 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +26,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "tb_user")
 public class User implements UserDetails {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -34,25 +35,22 @@ public class User implements UserDetails {
 	private String phone;
 	private LocalDate birthDate;
 	private String password;
-	
-/* aqui como o relacionamento é um para muitos
- * crio uma colecao dizendo que um user pode ter
- * varios pedidos	(um para muitos)
- */
-	@OneToMany(mappedBy = "client")
+
+	/*
+	 * aqui como o relacionamento é um para muitos
+	 * crio uma colecao dizendo que um user pode ter
+	 * varios pedidos (um para muitos)
+	 */
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
 	private List<Order> orders = new ArrayList<>();
-	
+
 	@ManyToMany
-	@JoinTable(name = "tb_user_role",
-	            joinColumns = @JoinColumn(name = "user_id"),
-	            inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
-	
 	public User() {
-		
-	}
 
+	}
 
 	public User(Long id, String name, String email, String phone, LocalDate birthDate, String password) {
 		this.id = id;
@@ -63,132 +61,114 @@ public class User implements UserDetails {
 		this.password = password;
 	}
 
-
 	public Long getId() {
 		return id;
 	}
-
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-
 	public String getName() {
 		return name;
 	}
-
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-
 	public String getEmail() {
 		return email;
 	}
-
 
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-
 	public String getPhone() {
 		return phone;
 	}
-
 
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
-
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
-
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
-
 	public String getPassword() {
 		return password;
 	}
-
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-// getlist criado pelo relacionamento
+	// getlist criado pelo relacionamento
 	public List<Order> getOrders() {
 		return orders;
 	}
-
 
 	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	
-	 public void addRole(Role role) {
-	    	roles.add(role);
-	    }
-/* testa o usuario se ele tem um certo Role
- * ou papel, autorização
- */
-	 
+	public void addRole(Role role) {
+		roles.add(role);
+	}
+	/*
+	 * testa o usuario se ele tem um certo Role
+	 * ou papel, autorização
+	 */
+
 	public boolean hasRole(String roleName) {
 		for (Role role : roles) {
 			if (role.getAuthority().equals(roleName)) {
 				return true;
-				}
 			}
-			return false;
 		}
+		return false;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles;
 	}
 
-
 	@Override
 	public String getUsername() {
 		return email;
 	}
-
 
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
-
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
-
 
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
-
 	@Override
 	public boolean isEnabled() {
 		return true;
 	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {

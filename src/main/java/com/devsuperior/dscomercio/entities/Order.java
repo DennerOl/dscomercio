@@ -45,11 +45,10 @@ public class Order {
 	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
 	private Payment payment;
 
-// relacionamento com OrderItem	
-	@OneToMany(mappedBy = "id.order")
+	// relacionamento com OrderItem
+	@OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL)
 	private Set<OrderItem> items = new HashSet<>();
-	
-	
+
 	public Order() {
 
 	}
@@ -105,16 +104,18 @@ public class Order {
 	public Set<OrderItem> getItems() {
 		return items;
 	}
-	
-	/* qui pego os items do orderItem e transformo em
+
+	/*
+	 * qui pego os items do orderItem e transformo em
 	 * um lista de produtos.
 	 * ou seja dos pedidos posso querer que mostre uma lista
 	 * dos produtos que contém aquele pedido
 	 */
 	public List<Product> getProducts() {
-	return items.stream().map(x -> x.getProduct()).toList();
+		return items.stream().map(x -> x.getProduct()).toList();
 
-		}
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

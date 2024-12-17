@@ -10,15 +10,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dscomercio.dto.UserDTO;
 import com.devsuperior.dscomercio.entities.Role;
 import com.devsuperior.dscomercio.entities.User;
 import com.devsuperior.dscomercio.projections.UserDetailsProjection;
+import com.devsuperior.dscomercio.repositories.OrderRepository;
 import com.devsuperior.dscomercio.repositories.RoleRepository;
 import com.devsuperior.dscomercio.repositories.UserRepository;
 import com.devsuperior.dscomercio.services.exceptions.EmailDuplicadoException;
+import com.devsuperior.dscomercio.services.exceptions.ResourceNotFoundException;
 import com.devsuperior.dscomercio.util.CustomUserUtil;
 
 @Service
@@ -39,6 +42,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	@Autowired
+	private OrderRepository orderRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -78,14 +84,14 @@ public class UserService implements UserDetailsService {
 		return new UserDTO(user);
 	}
 
+	@Transactional
 	public UserDTO criarUser(UserDTO dto) {
 		User user = modelMapper.map(dto, User.class);
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
 		Role role = roleRepository.findByAuthority("ROLE_CLIENT");
 
-		// Adicionando a role ao usuário
-		user.addRole(role); // Usando o método addRole para adicionar a role
+		user.addRole(role);
 		if (repository.findByEmail(user.getEmail()).equals(dto.getEmail())) {
 			throw new EmailDuplicadoException("email ja existe na base de dados");
 
@@ -94,6 +100,7 @@ public class UserService implements UserDetailsService {
 		return modelMapper.map(user, UserDTO.class);
 	}
 
+	@Transactional
 	public UserDTO update(UserDTO dto) {
 
 		User existingUser = repository.findByEmail(dto.getEmail())
@@ -119,5 +126,16 @@ public class UserService implements UserDetailsService {
 		existingUser = repository.save(existingUser);
 
 		return modelMapper.map(existingUser, UserDTO.class);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void delete(String email) {
+
+		User user = repository.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o email: " + email));
+
+		orderRepository.deleteByclient_id(user.getId());
+
+		repository.delete(user);
 	}
 }
